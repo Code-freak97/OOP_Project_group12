@@ -1,17 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package spreadoffiresimulation;
 import java.util.ArrayList;
 
 /**
  *
- * @author Anakan
+ * @author OOP Group#12
  */
-public class Fire {
+public class Fire extends Thread{
     private static final int BURNING = 2;
     //private Forest forest;
     private static int[][] forest;
@@ -26,10 +20,18 @@ public class Fire {
     public Fire(Forest forest){
         this.forest = forest.getForest();
         probLand = forest.getProbLand();
-        randomFire();
-        this.forest[beginI][beginJ] = BURNING;
-        indexI.add(beginI);
-        indexJ.add(beginJ);
+        //randomFire();
+        //this.forest[beginI][beginJ] = BURNING;
+        for(int i = 0; i < this.forest.length;i++){
+            for(int j = 0; j <this.forest.length;j++){
+                if(this.forest[i][j] == BURNING){
+                    indexI.add(i);
+                    indexJ.add(j);
+                }
+            }
+        }
+//        indexI.add(beginI);
+//        indexJ.add(beginJ);
         simu = new Simulator(this);
     }
     
@@ -50,11 +52,20 @@ public class Fire {
     public void probCatch(double probability){
         prob = probability;
         burn(indexI,indexJ);
+        try{
+            Thread.sleep(100);
+        }catch(Exception e){
+           //
+        }
         print();
-        //simu.update(this);
+        simu.update();
+        SpreadOfFireSimulation.frame.setSize(1001,600); // fix-bug
+        SpreadOfFireSimulation.frame.add(simu);
         if(indexI.isEmpty() && indexJ.isEmpty()){
             // stop doing
+            simu.update();
         }else{
+            SpreadOfFireSimulation.frame.setSize(1001,600); // fix-bug
             probCatch(probability);
         }
     }
@@ -105,6 +116,10 @@ public class Fire {
         return simu;
     }
     
+    public double getProb(){
+        return prob;
+    }
+    
     public void print(){
         for (int[] forest1 : forest) {
             for (int j = 0; j < forest.length; j++) {
@@ -125,3 +140,4 @@ public class Fire {
     
     
 }
+
